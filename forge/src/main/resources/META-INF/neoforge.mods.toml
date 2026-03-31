@@ -39,3 +39,10 @@ mandatory = true
 versionRange = "[${vs2_version},)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.vs_eureka]]
+modId = "create"
+mandatory = false
+versionRange = "[0.0,)"
+ordering = "AFTER"
+side = "BOTH"

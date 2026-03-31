@@ -30,6 +30,7 @@ import org.valkyrienskies.eureka.EurekaMod
 import org.valkyrienskies.eureka.block.ShipHelmBlock
 import org.valkyrienskies.eureka.gui.shiphelm.ShipHelmScreenMenu
 import org.valkyrienskies.eureka.ship.EurekaShipControl
+import org.valkyrienskies.eureka.util.KtContainerData
 import org.valkyrienskies.eureka.util.ShipAssembler
 import org.valkyrienskies.mod.common.ValkyrienSkiesMod
 import org.valkyrienskies.mod.common.entity.ShipMountingEntity
@@ -47,6 +48,9 @@ class ShipHelmBlockEntity(pos: BlockPos, state: BlockState) :
     private val ship: ServerShip? get() = (level as ServerLevel).getShipObjectManagingPos(this.blockPos)
     private val control: EurekaShipControl? get() = ship?.getAttachment(EurekaShipControl::class.java)
     private val seats = mutableListOf<ShipMountingEntity>()
+    val data = KtContainerData()
+    private var dataAligning by data
+    private var dataAssembled by data
     val assembled get() = ship != null
     val aligning get() = control?.aligning ?: false
     private var shouldDisassembleWhenPossible = false
@@ -117,6 +121,8 @@ class ShipHelmBlockEntity(pos: BlockPos, state: BlockState) :
             this.disassemble()
         }
         control?.ship = ship
+        dataAligning = if (aligning) 1 else 0
+        dataAssembled = if (assembled) 1 else 0
     }
 
     // Needs to get called server-side

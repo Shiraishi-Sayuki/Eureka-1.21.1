@@ -21,8 +21,7 @@ class ShipHelmScreen(handler: ShipHelmScreenMenu, playerInventory: Inventory, te
     private lateinit var alignButton: ShipHelmButton
     private lateinit var disassembleButton: ShipHelmButton
 
-    private var pos = (Minecraft.getInstance().hitResult as? BlockHitResult)?.blockPos
-    private var ship: Ship? = pos?.let { Minecraft.getInstance().level?.getShipManagingPos(it) }
+    private var ship: Ship? = null
 
     init {
         titleLabelX = 6
@@ -57,20 +56,9 @@ class ShipHelmScreen(handler: ShipHelmScreenMenu, playerInventory: Inventory, te
     }
 
     private fun updateButtons() {
-        val newPos = (Minecraft.getInstance().hitResult as? BlockHitResult)?.blockPos
-        if (newPos != null){
-            pos = newPos
-        }
-        val newShip = pos?.let { Minecraft.getInstance().level?.getShipManagingPos(it) }
-        if (newShip != null){
-            ship = newShip
-        }
-
-        val isLookingAtShip = ship != null
-
-        assembleButton.active = !isLookingAtShip
-        disassembleButton.active = EurekaConfig.SERVER.allowDisassembly && isLookingAtShip
-        alignButton.active = disassembleButton.active
+        assembleButton.active = !menu.assembled
+        disassembleButton.active = EurekaConfig.SERVER.allowDisassembly && menu.assembled
+        alignButton.active = disassembleButton.active && !menu.aligning
     }
 
     override fun renderBg(guiGraphics: GuiGraphics, partialTicks: Float, mouseX: Int, mouseY: Int) {
@@ -90,8 +78,11 @@ class ShipHelmScreen(handler: ShipHelmScreenMenu, playerInventory: Inventory, te
             alignButton.active = false
         } else {
             alignButton.message = ALIGN_TEXT
-            alignButton.active = true
+            alignButton.active = EurekaConfig.SERVER.allowDisassembly && menu.assembled
         }
+
+        val lookedAtPos = (minecraft?.hitResult as? BlockHitResult)?.blockPos
+        ship = lookedAtPos?.let { minecraft?.level?.getShipManagingPos(it) }
 
         // TODO render stats
         if (ship == null) return

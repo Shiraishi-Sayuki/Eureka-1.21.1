@@ -7,15 +7,23 @@ import net.minecraft.world.item.ItemStack
 import org.valkyrienskies.eureka.EurekaConfig
 import org.valkyrienskies.eureka.EurekaScreens
 import org.valkyrienskies.eureka.blockentity.ShipHelmBlockEntity
+import org.valkyrienskies.eureka.util.KtContainerData
 
 class ShipHelmScreenMenu(syncId: Int, playerInv: Inventory, private val blockEntity: ShipHelmBlockEntity?) :
     AbstractContainerMenu(EurekaScreens.SHIP_HELM.get(), syncId) {
 
     constructor(syncId: Int, playerInv: Inventory) : this(syncId, playerInv, null)
 
-    // TODO this isn't synced...
-    val aligning = blockEntity?.aligning ?: false
-    val assembled = blockEntity?.assembled ?: false
+    private val data = blockEntity?.data?.clone() ?: KtContainerData()
+    private var aligningInt by data
+    private var assembledInt by data
+
+    val aligning get() = aligningInt != 0
+    val assembled get() = assembledInt != 0
+
+    init {
+        addDataSlots(data)
+    }
 
     override fun stillValid(player: Player): Boolean = true
 

@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
+    {
+      "id": "#create:non_movable",
+      "required": false
+    },
     "#minecraft:base_stone_nether",
     "#minecraft:base_stone_overworld",
     "#minecraft:flowers",
